@@ -1,24 +1,27 @@
 pipeline {
     agent any
+    tools {
+        maven 'Maven 3.6.1'
+        jdk 'jdk8'
+    }
     stages {
-        stage('clean') {
+        stage ('Initialize') {
             steps {
-                sh ' mvn clean'
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
             }
         }
-        stage('compile') {
+
+        stage ('Build') {
             steps {
-                sh 'mvn compile'
+                sh 'mvn clean' 
             }
-        }
-        stage('package') {
-            steps {
-                sh 'mvn package'
-            }
-        }
-                stage('Install') {
-            steps {
-                sh 'mvn install'
+            post {
+                success {
+                    sh'test' 
+                }
             }
         }
     }
